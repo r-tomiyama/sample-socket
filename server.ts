@@ -4,9 +4,23 @@ import socketio from "socket.io";
 const server: http.Server = http.createServer();
 const io: socketio.Server = new socketio.Server(server);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-io.on("connection", (socket: socketio.Socket) => console.log("connect"));
+io.on("connection", (socket: socketio.Socket) => {
+  console.log("connect");
+
+  let counter = 0;
+
+  // Clientからメッセージを受信
+  socket.on("yyy", (data: { message: string }) => {
+    console.log(`type: ${typeof data}   data: ${data.message}`);
+  });
+
+  // Clientにメッセージを送信
+  setInterval(() => {
+    socket.emit("xxx", { message: `server message ${counter++}` });
+  }, 1000);
+});
 
 const port = 10000;
-console.log("hoge");
-server.listen(port, () => console.log(`app listening on port ${port}`));
+server.listen(port, () => {
+  console.log(`app listening on port ${port}`);
+});
